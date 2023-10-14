@@ -13,6 +13,14 @@ def test_item_initialized(item) -> None:
     assert item.quantity == 2
 
 
+def test_repr(item):
+    assert repr(item) == "Item('Смартфон', 1000, 2)"
+
+
+def test_str(item):
+    assert str(item) == 'Смартфон'
+
+
 def test_calculate_total_price(item) -> None:
     assert item.calculate_total_price() == 2000
 

@@ -38,3 +38,9 @@ def test_name_setter():
 
 def test_string_to_number():
     assert Item.string_to_number('5.0') == 5
+
+
+def test_add(item):
+    item2 = Item("Планшет", 15000, 4)
+    assert item + item2 == 6
+    assert item + 5 is None

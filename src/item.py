@@ -1,4 +1,16 @@
 import csv
+import os
+
+
+class InstantiateCSVError(Exception):
+    """
+    Класс-исключение
+    """
+    def __init__(self):
+        self.message = "_Файл item.csv поврежден_"
+
+    def __str__(self):
+        return self.message
 
 
 class Item:
@@ -7,6 +19,7 @@ class Item:
     """
     pay_rate = 1.0
     all = []
+    data = os.path.join('..', 'src', 'items.csv')
 
     def __init__(self, name: str, price: float, quantity: int) -> None:
         """
@@ -49,22 +62,27 @@ class Item:
         self.price *= self.pay_rate
 
     @classmethod
-    def instantiate_from_csv(cls, csv_doc):
+    def instantiate_from_csv(cls):
         """
         Создаём экземпляры класса Item данными из файла src/items.csv
         Добавляем экземпляры в список Item.all
         """
-        cls.all.clear()
-        with open(csv_doc, 'r', encoding='windows-1251') as f:
-            doc = csv.DictReader(f)
-            items = []
-            for i in doc:
-                name = i['name']
-                price = float(i['price'])
-                quantity = int(i['quantity'])
-                item = cls(name, price, quantity)
-                items.append(item)
-            cls.all = items
+        try:
+            cls.all.clear()
+            with open(Item.data, 'r', encoding='windows-1251') as f:
+                doc = csv.DictReader(f)
+                items = []
+                for i in doc:
+                    if len(i) < 3:
+                        raise InstantiateCSVError
+                    name = i['name']
+                    price = float(i['price'])
+                    quantity = int(i['quantity'])
+                    item = cls(name, price, quantity)
+                    items.append(item)
+                cls.all = items
+        except FileNotFoundError:
+            raise FileNotFoundError("_Отсутствует файл item.csv_")
 
     @property
     def name(self):

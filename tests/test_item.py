@@ -1,5 +1,7 @@
+from src.item import InstantiateCSVError
 from src.item import Item
 import pytest
+import os
 
 
 @pytest.fixture
@@ -44,3 +46,15 @@ def test_add(item):
     item2 = Item("Планшет", 15000, 4)
     assert item + item2 == 6
     assert item + 5 is None
+
+
+def test_file_not_found():
+    Item.data = os.path.join('src', 'error.csv')
+    with pytest.raises(FileNotFoundError, match='_Отсутствует файл item.csv_'):
+        Item.instantiate_from_csv()
+
+
+def test_instantiate_csv():
+    Item.data = os.path.join('test.csv')
+    with pytest.raises(InstantiateCSVError):
+        Item.instantiate_from_csv()
